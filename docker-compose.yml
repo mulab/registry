@@ -1,0 +1,21 @@
+nginx:
+  image: nginx
+  expose:
+    - "80"
+  volumes:
+    - /container/docker_registry/nginx.conf:/etc/nginx/conf.d/nginx.conf
+    - /container/docker_registry/docker-registry.conf:/etc/nginx/docker-registry.conf
+    - /container/docker_registry/cert.pem:/etc/ssl/certs/docker-registry
+    - /container/docker_registry/key.pem:/etc/ssl/private/docker-registry
+  links:
+    - registrybackend
+  hostname: registry
+registrybackend:
+  image: registry
+  expose:
+    - "5000"
+  environment:
+    - SETTINGS_FLAVOR=dev
+    - STORAGE_PATH=/registry
+  volumes:
+    - /container/docker_registry/data:/registry
