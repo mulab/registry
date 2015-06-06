@@ -1,7 +1,5 @@
 nginx:
   image: nginx
-  expose:
-    - "80"
   volumes:
     - /container/docker_registry/nginx.conf:/etc/nginx/conf.d/nginx.conf
     - /container/docker_registry/docker-registry.conf:/etc/nginx/docker-registry.conf
@@ -9,7 +7,9 @@ nginx:
     - /container/docker_registry/key.pem:/etc/ssl/private/docker-registry
   links:
     - registrybackend
-  hostname: registry
+  hostname: registry.service.lab.mu
+  environment:
+    SERVICE_NAME: registry
 registrybackend:
   image: registry
   expose:
@@ -17,5 +17,6 @@ registrybackend:
   environment:
     - SETTINGS_FLAVOR=dev
     - STORAGE_PATH=/registry
+    - SERVICE_IGNORE=true
   volumes:
     - /container/docker_registry/data:/registry
